@@ -33,7 +33,7 @@ function openPopupMenu(modeler, element, event) {
   const popupMenu = modeler.get("popupMenu");
   if (popupMenu && !popupMenu.isEmpty(element, "bpmn-replace")) {
     popupMenu.open(element, "bpmn-replace", {
-      cursor: { x: event.clientX + 10, y: event.clientY + 10 }
+      cursor: { x: event.clientX + 10, y: event.clientY + 10 },
     });
     // 设置画布点击清除事件
     const canvas = modeler.get("canvas");
@@ -60,6 +60,6 @@ function openEnhancementPopupMenu(modeler, element, event) {
 function getContextMenuPosition(event, offset) {
   return {
     x: event.clientX + (offset ? 10 : 0),
-    y: event.clientY + (offset ? 25 : 0)
+    y: event.clientY + (offset ? 25 : 0),
   };
 }

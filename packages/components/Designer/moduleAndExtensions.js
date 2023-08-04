@@ -5,7 +5,7 @@ import {
   BpmnPropertiesPanelModule,
   BpmnPropertiesProviderModule,
   CloudElementTemplatesPropertiesProviderModule,
-  CamundaPlatformPropertiesProviderModule
+  CamundaPlatformPropertiesProviderModule,
 } from "bpmn-js-properties-panel";
 // 官方扩展工具 元素模板选择
 import ElementTemplateChooserModule from "@bpmn-io/element-template-chooser";
@@ -89,10 +89,10 @@ export default function (settings) {
       active: true,
       bpmnlint: {
         config: {
-          rules: { ...rules, "task-required": "error" }
+          rules: { ...rules, "task-required": "error" },
         },
-        resolver
-      }
+        resolver,
+      },
     };
   }
 
@@ -100,7 +100,7 @@ export default function (settings) {
   if (settings.useMinimap) {
     modules.push(minimapModule);
     options["minimap"] = {
-      open: true
+      open: true,
     };
   }
 
@@ -123,13 +123,13 @@ export default function (settings) {
 
     // 设置键盘事件绑定
     options["keyboard"] = {
-      bindTo: document
+      bindTo: document,
     };
 
     modules.push(ElementFactory);
     options["elementFactory"] = {
       "bpmn:Task": { width: 120, height: 120 },
-      "bpmn:SequenceFlow": { width: 100, height: 80 }
+      "bpmn:SequenceFlow": { width: 100, height: 80 },
     };
   }
 

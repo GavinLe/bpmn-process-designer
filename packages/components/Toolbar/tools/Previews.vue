@@ -26,13 +26,13 @@ export default {
     ...mapGetters(["getModeler"]),
     modelTitle() {
       return this.codeLanguage === "xml" ? "预览 XML" : "预览 JSON";
-    }
+    },
   },
   data() {
     return {
       codeLanguage: "xml",
       codeString: "",
-      codeModelVisible: false
+      codeModelVisible: false,
     };
   },
   methods: {
@@ -41,7 +41,10 @@ export default {
         if (!this.getModeler) return this.$message.error("流程图引擎初始化失败");
         this.codeLanguage = "xml";
         this.codeModelVisible = true;
-        const { xml } = await this.getModeler.saveXML({ format: true, preamble: true });
+        const { xml } = await this.getModeler.saveXML({
+          format: true,
+          preamble: true,
+        });
         this.codeString = xml;
       } catch (e) {
         catchError(e);
@@ -52,13 +55,16 @@ export default {
         if (!this.getModeler) return this.$message.error("流程图引擎初始化失败");
         this.codeLanguage = "json";
         this.codeModelVisible = true;
-        const { xml } = await this.getModeler.saveXML({ format: true, preamble: true });
+        const { xml } = await this.getModeler.saveXML({
+          format: true,
+          preamble: true,
+        });
         const jsonStr = await this.getModeler.get("moddle").fromXML(xml);
         this.codeString = JSON.stringify(jsonStr, null, 2);
       } catch (e) {
         catchError(e);
       }
-    }
-  }
+    },
+  },
 };
 </script>

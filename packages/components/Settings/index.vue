@@ -102,18 +102,6 @@
           </el-form-item>
         </el-form>
       </div>
-      <div class="tips-message">
-        <div class="grip-tips">
-          <p>注：</p>
-          <p>1. 仅自定义模式可使用 activiti 或者 flowable 引擎</p>
-          <p>2. 扩展模式下只能扩展工具按钮，不能删除原有工具</p>
-          <p>3. 自定义的MySql节点只能使用非默认渲染方式</p>
-          <p>4. 🚀🚀🚀付费咨询请添加微信或者关注微信公众号</p>
-        </div>
-        <p style="font-weight: bold">友情赞助</p>
-        <div class="sponsorship-image wechat"></div>
-        <div class="sponsorship-image alipay"></div>
-      </div>
     </el-drawer>
   </div>
 </template>
@@ -128,8 +116,8 @@ export default {
   props: {
     settings: {
       type: Object,
-      default: () => defaultSettings
-    }
+      default: () => defaultSettings,
+    },
   },
   data() {
     return {
@@ -144,7 +132,7 @@ export default {
         "defaultTaskColor",
         "defaultLabelColor",
         "defaultGatewayColor",
-        "defaultSequenceColor"
+        "defaultSequenceColor",
       ],
       themeOpacityKeys: [
         "defaultStartEventOpacity",
@@ -154,13 +142,13 @@ export default {
         "defaultTaskOpacity",
         "defaultLabelOpacity",
         "defaultGatewayOpacity",
-        "defaultSequenceOpacity"
+        "defaultSequenceOpacity",
       ],
-      editorSettings: this.settings
+      editorSettings: this.settings,
     };
   },
   computed: {
-    ...mapGetters(["getEditor"])
+    ...mapGetters(["getEditor"]),
   },
   watch: {
     editorSettings: {
@@ -170,8 +158,8 @@ export default {
           this.editorSettings.processEngine = "camunda";
         }
         this.updateEditorState();
-      }
-    }
+      },
+    },
   },
   methods: {
     changeModelVisible(event) {
@@ -180,7 +168,7 @@ export default {
     },
     updateEditorState: debounce(function () {
       this.editorSettings && this.$store.commit("setConfiguration", { ...this.editorSettings });
-    }, 100)
-  }
+    }, 100),
+  },
 };
 </script>

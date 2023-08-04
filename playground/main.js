@@ -1,6 +1,7 @@
 import Vue from "vue";
 import App from "./App.vue";
 import store from "../packages/store";
+import router from "../playground/router";
 
 import "@packages/bpmn-icons";
 
@@ -22,6 +23,7 @@ Vue.directive("r-popover", ResetPopover);
 import "../packages/theme/index.scss";
 
 new Vue({
+  router,
   store,
-  render: (h) => h(App)
+  render: (h) => h(App),
 }).$mount("#app");

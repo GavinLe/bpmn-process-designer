@@ -18,14 +18,7 @@
 </template>
 
 <script>
-import {
-  getACAfter,
-  getACBefore,
-  getACExclusive,
-  setACAfter,
-  setACBefore,
-  setACExclusive
-} from "@packages/bo-utils/asynchronousContinuationsUtil";
+import { getACAfter, getACBefore, getACExclusive, setACAfter, setACBefore, setACExclusive } from "@packages/bo-utils/asynchronousContinuationsUtil";
 import EventEmitter from "@utils/EventEmitter";
 import { getActive } from "@packages/bpmn-utils/BpmnDesignerUtils";
 
@@ -35,13 +28,13 @@ export default {
     return {
       acBefore: false,
       acAfter: false,
-      acExclusive: false
+      acExclusive: false,
     };
   },
   computed: {
     showExclusive() {
       return this.acBefore || this.acAfter;
-    }
+    },
   },
   mounted() {
     this.reloadACStatus();
@@ -64,7 +57,7 @@ export default {
     updateElementACExclusive(value) {
       setACExclusive(getActive(), value);
       this.reloadACStatus();
-    }
-  }
+    },
+  },
 };
 </script>

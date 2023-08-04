@@ -4,7 +4,7 @@ export function setEncoded(type, filename, data) {
   return {
     filename: `${filename}.${type.toLowerCase()}`,
     href: `data:application/${type === "svg" ? "text/xml" : "bpmn20-xml"};charset=UTF-8,${encodedData}`,
-    data: data
+    data: data,
   };
 }
 

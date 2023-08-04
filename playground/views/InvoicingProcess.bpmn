@@ -1,0 +1,594 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_02nhzz3" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.7.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+  <bpmn:process id="InvoicingProcess" name="开票流程" isExecutable="true" camunda:versionTag="v1.0">
+    <bpmn:startEvent id="startEvent" name="开始" camunda:initiator="applyEmpNo">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="departmentAudit" type="string">
+            <camunda:validation>
+              <camunda:constraint name="required" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="financialAudit" type="string">
+            <camunda:validation>
+              <camunda:constraint name="required" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="financeBP" type="string">
+            <camunda:validation>
+              <camunda:constraint name="required" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="taxManagement" type="string">
+            <camunda:validation>
+              <camunda:constraint name="required" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="taxService" type="string">
+            <camunda:validation>
+              <camunda:constraint name="required" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="purchaserAccounting" type="string">
+            <camunda:validation>
+              <camunda:constraint name="required" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="iaOperType" type="string">
+            <camunda:validation>
+              <camunda:constraint name="required" />
+            </camunda:validation>
+          </camunda:formField>
+        </camunda:formData>
+        <camunda:properties>
+          <camunda:property name="createButton" value="submit,draft" />
+          <camunda:property name="draftButton" value="submit,draft" />
+          <camunda:property name="serviceType" value="processCenter,fssc" />
+        </camunda:properties>
+      </bpmn:extensionElements>
+      <bpmn:outgoing>Flow_1bpoo9s</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="userTask_1_1" name="部门审核" camunda:assignee="${assignee}">
+      <bpmn:extensionElements>
+        <camunda:properties>
+          <camunda:property name="alisa" value="部门审核:DepartmentAudit" />
+          <camunda:property name="ApprovalButton" value="agree,reject,transfer,additionUser" />
+          <camunda:property name="DisplayButton" value="transmit" />
+          <camunda:property name="desc" value="并签1" />
+          <camunda:property name="serviceType" value="processCenter" />
+          <camunda:property name="auto" value="assigneeEqualIa" />
+        </camunda:properties>
+        <camunda:taskListener class="com.geely.fin.listener.assignee.BusinessApproverTaskListener" event="create">
+          <camunda:field name="approveType">
+            <camunda:string>departmentAudit</camunda:string>
+          </camunda:field>
+        </camunda:taskListener>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1ugxyvz</bpmn:incoming>
+      <bpmn:outgoing>Flow_1w5pt66</bpmn:outgoing>
+      <bpmn:multiInstanceLoopCharacteristics camunda:collection="assigneeList" camunda:elementVariable="assignee">
+        <bpmn:completionCondition xsi:type="bpmn:tFormalExpression">${nrOfInstances == nrOfCompletedInstances}</bpmn:completionCondition>
+      </bpmn:multiInstanceLoopCharacteristics>
+    </bpmn:userTask>
+    <bpmn:userTask id="userTask_2_1" name="销方财务审核" camunda:assignee="${assignee}">
+      <bpmn:extensionElements>
+        <camunda:properties>
+          <camunda:property name="alisa" value="销方财务审核:FinancialAudit" />
+          <camunda:property name="ApprovalButton" value="agree,reject,transfer,additionUser" />
+          <camunda:property name="DisplayButton" value="transmit" />
+          <camunda:property name="desc" value="并签1" />
+          <camunda:property name="serviceType" value="processCenter" />
+          <camunda:property name="auto" value="assigneeEqualIa" />
+        </camunda:properties>
+        <camunda:taskListener class="com.geely.fin.listener.assignee.BusinessApproverTaskListener" event="create" id="">
+          <camunda:field name="approveType">
+            <camunda:string>financialAudit</camunda:string>
+          </camunda:field>
+        </camunda:taskListener>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0z35153</bpmn:incoming>
+      <bpmn:outgoing>Flow_0mucykr</bpmn:outgoing>
+      <bpmn:multiInstanceLoopCharacteristics camunda:collection="assigneeList" camunda:elementVariable="assignee">
+        <bpmn:completionCondition xsi:type="bpmn:tFormalExpression">${nrOfInstances == nrOfCompletedInstances}</bpmn:completionCondition>
+      </bpmn:multiInstanceLoopCharacteristics>
+    </bpmn:userTask>
+    <bpmn:parallelGateway id="Gateway_1ro9spc">
+      <bpmn:incoming>Flow_13ppdci</bpmn:incoming>
+      <bpmn:outgoing>Flow_1ugxyvz</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0z35153</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:parallelGateway id="Gateway_1cuugwu">
+      <bpmn:incoming>Flow_1w5pt66</bpmn:incoming>
+      <bpmn:incoming>Flow_0mucykr</bpmn:incoming>
+      <bpmn:outgoing>Flow_1hnwh6q</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:sequenceFlow id="Flow_1ugxyvz" sourceRef="Gateway_1ro9spc" targetRef="userTask_1_1" />
+    <bpmn:sequenceFlow id="Flow_0z35153" sourceRef="Gateway_1ro9spc" targetRef="userTask_2_1" />
+    <bpmn:sequenceFlow id="Flow_1w5pt66" sourceRef="userTask_1_1" targetRef="Gateway_1cuugwu" />
+    <bpmn:sequenceFlow id="Flow_0mucykr" sourceRef="userTask_2_1" targetRef="Gateway_1cuugwu" />
+    <bpmn:exclusiveGateway id="Gateway_1ovbt76" name="操作类型为开具正数、冲红并重开">
+      <bpmn:incoming>Flow_1xip84p</bpmn:incoming>
+      <bpmn:outgoing>Flow_0h3uzg6</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0ofjeey</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:exclusiveGateway id="Gateway_1gmrysj" name="是否为单一关联购买方">
+      <bpmn:incoming>Flow_0h3uzg6</bpmn:incoming>
+      <bpmn:outgoing>Flow_0dsrufr</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0zwxryt</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="userTask_0_2" name="购方财务审核" camunda:assignee="${assignee}">
+      <bpmn:extensionElements>
+        <camunda:properties>
+          <camunda:property name="alisa" value="购方财务审核:FinanceBP" />
+          <camunda:property name="ApprovalButton" value="agree,reject,transfer,additionUser" />
+          <camunda:property name="DisplayButton" value="transmit" />
+          <camunda:property name="serviceType" value="processCenter" />
+        </camunda:properties>
+        <camunda:taskListener class="com.geely.fin.listener.assignee.BusinessApproverTaskListener" event="create">
+          <camunda:field name="approveType">
+            <camunda:string>financeBP</camunda:string>
+          </camunda:field>
+        </camunda:taskListener>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0dsrufr</bpmn:incoming>
+      <bpmn:outgoing>Flow_1r3gyrj</bpmn:outgoing>
+      <bpmn:multiInstanceLoopCharacteristics camunda:collection="assigneeList" camunda:elementVariable="assignee">
+        <bpmn:completionCondition xsi:type="bpmn:tFormalExpression">${nrOfInstances == nrOfCompletedInstances}</bpmn:completionCondition>
+      </bpmn:multiInstanceLoopCharacteristics>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="Gateway_0dz9b4h" name="业务类型是否为其他">
+      <bpmn:incoming>Flow_1r3gyrj</bpmn:incoming>
+      <bpmn:incoming>Flow_0ofjeey</bpmn:incoming>
+      <bpmn:incoming>Flow_0zwxryt</bpmn:incoming>
+      <bpmn:outgoing>Flow_19uaqk4</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0uyb1vr</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="userTask_0_3" name="税务管理岗" camunda:assignee="${assignee}">
+      <bpmn:extensionElements>
+        <camunda:properties>
+          <camunda:property name="alisa" value="税务管理岗:TaxManagement" />
+          <camunda:property name="ApprovalButton" value="agree,reject,transfer,additionUser" />
+          <camunda:property name="DisplayButton" value="transmit" />
+          <camunda:property name="serviceType" value="processCenter" />
+          <camunda:property name="auto" value="assigneeEqualIa" />
+        </camunda:properties>
+        <camunda:taskListener class="com.geely.fin.listener.assignee.BusinessApproverTaskListener" event="create">
+          <camunda:field name="approveType">
+            <camunda:string>taxManagement</camunda:string>
+          </camunda:field>
+        </camunda:taskListener>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_19uaqk4</bpmn:incoming>
+      <bpmn:outgoing>Flow_0vge2lr</bpmn:outgoing>
+      <bpmn:multiInstanceLoopCharacteristics camunda:collection="assigneeList" camunda:elementVariable="assignee">
+        <bpmn:completionCondition xsi:type="bpmn:tFormalExpression">${nrOfInstances == nrOfCompletedInstances}</bpmn:completionCondition>
+      </bpmn:multiInstanceLoopCharacteristics>
+    </bpmn:userTask>
+    <bpmn:userTask id="userTask_0_4" name="纳税服务岗" camunda:assignee="${assignee}">
+      <bpmn:extensionElements>
+        <camunda:properties>
+          <camunda:property name="alisa" value="纳税服务岗:TaxService" />
+          <camunda:property name="ApprovalButton" value="agree,reject" />
+          <camunda:property name="DisplayButton" value="transmit" />
+          <camunda:property name="serviceType" value="fssc" />
+        </camunda:properties>
+        <camunda:taskListener class="com.geely.fin.listener.assignee.BusinessApproverTaskListener" event="create">
+          <camunda:field name="approveType">
+            <camunda:string>taxService</camunda:string>
+          </camunda:field>
+        </camunda:taskListener>
+        <camunda:executionListener class="com.geely.fin.listener.CallBackBusinessExecutionListener" event="start">
+          <camunda:field name="businessType">
+            <camunda:string>ia_abolish</camunda:string>
+          </camunda:field>
+        </camunda:executionListener>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_12h7sfq</bpmn:incoming>
+      <bpmn:outgoing>Flow_1awsit7</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_0h3uzg6" name="是" sourceRef="Gateway_1ovbt76" targetRef="Gateway_1gmrysj">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${iaOperType eq 'positive-number' or iaOperType eq 'reverse-invoice'}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0dsrufr" name="是" sourceRef="Gateway_1gmrysj" targetRef="userTask_0_2">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${buyerNum eq 'single' and isRelatedParty == 1}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1r3gyrj" sourceRef="userTask_0_2" targetRef="Gateway_0dz9b4h" />
+    <bpmn:sequenceFlow id="Flow_19uaqk4" name="是" sourceRef="Gateway_0dz9b4h" targetRef="userTask_0_3">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(iaOperType eq 'positive-number' or iaOperType eq 'negative-number' or iaOperType eq 'reverse-invoice' or iaOperType eq 'abolish') and busType eq 'other'}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0ofjeey" name="否" sourceRef="Gateway_1ovbt76" targetRef="Gateway_0dz9b4h">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!(iaOperType eq 'positive-number') and !(iaOperType eq 'reverse-invoice')}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0zwxryt" name="否" sourceRef="Gateway_1gmrysj" targetRef="Gateway_0dz9b4h">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!(buyerNum eq 'single') or (buyerNum eq 'single' and isRelatedParty != 1)}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:userTask id="userTask_4_1" name="购方核算岗" camunda:assignee="${assignee}">
+      <bpmn:extensionElements>
+        <camunda:properties>
+          <camunda:property name="alisa" value="购方核算岗:PurchaserAccounting" />
+          <camunda:property name="DisplayButton" value="transmit" />
+          <camunda:property name="desc" value="并签2" />
+          <camunda:property name="serviceType" value="fssc" />
+        </camunda:properties>
+        <camunda:taskListener class="com.geely.fin.listener.assignee.BusinessApproverTaskListener" event="create">
+          <camunda:field name="approveType">
+            <camunda:string>purchaserAccounting</camunda:string>
+          </camunda:field>
+        </camunda:taskListener>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_13uofg4</bpmn:incoming>
+      <bpmn:outgoing>Flow_0st47f8</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="userTask_0_1" name="申请" camunda:assignee="${assignee}">
+      <bpmn:extensionElements>
+        <camunda:properties>
+          <camunda:property name="alisa" value="开始:Start" />
+          <camunda:property name="ApprovalButton" value="resubmit,terminate" />
+          <camunda:property name="serviceType" value="processCenter" />
+          <camunda:property name="DisplayButton" value="transmit,recall" />
+        </camunda:properties>
+        <camunda:taskListener class="com.geely.fin.listener.assignee.OwnerAssigneeTaskListener" event="create" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1bpoo9s</bpmn:incoming>
+      <bpmn:outgoing>Flow_13ppdci</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_1bpoo9s" sourceRef="startEvent" targetRef="userTask_0_1" />
+    <bpmn:sequenceFlow id="Flow_13ppdci" sourceRef="userTask_0_1" targetRef="Gateway_1ro9spc" />
+    <bpmn:endEvent id="endEvent_0_1" name="结束">
+      <bpmn:extensionElements>
+        <camunda:properties>
+          <camunda:property name="alisa" value="结束:End" />
+        </camunda:properties>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0st47f8</bpmn:incoming>
+      <bpmn:incoming>Flow_0lqn69q</bpmn:incoming>
+      <bpmn:incoming>Flow_1pdg4m3</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="Activity_02gh4gn" name="诺税通" camunda:class="com.geely.fin.listener.CallBackBusinessExecutionListener">
+      <bpmn:extensionElements>
+        <camunda:field name="businessType">
+          <camunda:string>NuoNuo</camunda:string>
+        </camunda:field>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0mohlgv</bpmn:incoming>
+      <bpmn:incoming>Flow_1qrnvpc</bpmn:incoming>
+      <bpmn:incoming>Flow_0vn3hmq</bpmn:incoming>
+      <bpmn:outgoing>Flow_12h7sfq</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_12h7sfq" sourceRef="Activity_02gh4gn" targetRef="userTask_0_4" />
+    <bpmn:exclusiveGateway id="Gateway_1eh4oym" name="是否为单一关联购买方">
+      <bpmn:incoming>Flow_1dbld1b</bpmn:incoming>
+      <bpmn:outgoing>Flow_13uofg4</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1pdg4m3</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:exclusiveGateway id="Gateway_0bhsviy" name="是否红字申请">
+      <bpmn:incoming>Flow_1hnwh6q</bpmn:incoming>
+      <bpmn:outgoing>Flow_1xip84p</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0mohlgv</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1hnwh6q" sourceRef="Gateway_1cuugwu" targetRef="Gateway_0bhsviy" />
+    <bpmn:sequenceFlow id="Flow_1xip84p" name="否" sourceRef="Gateway_0bhsviy" targetRef="Gateway_1ovbt76">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!(iaOperType eq 'rubrication')}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:exclusiveGateway id="Gateway_0v6os5h" name="是否红字申请">
+      <bpmn:incoming>Flow_1awsit7</bpmn:incoming>
+      <bpmn:outgoing>Flow_0lqn69q</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1dbld1b</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1awsit7" sourceRef="userTask_0_4" targetRef="Gateway_0v6os5h" />
+    <bpmn:sequenceFlow id="Flow_0mohlgv" name="是" sourceRef="Gateway_0bhsviy" targetRef="Activity_02gh4gn">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${iaOperType eq 'rubrication' or iaOperType eq 'ele-red-ticket'}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:exclusiveGateway id="Gateway_0oz45p4" name="是否发票作废">
+      <bpmn:incoming>Flow_0vge2lr</bpmn:incoming>
+      <bpmn:incoming>Flow_0uyb1vr</bpmn:incoming>
+      <bpmn:outgoing>Flow_0akxgbt</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0vn3hmq</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0vge2lr" sourceRef="userTask_0_3" targetRef="Gateway_0oz45p4" />
+    <bpmn:sequenceFlow id="Flow_0akxgbt" name="是" sourceRef="Gateway_0oz45p4" targetRef="userTask_0_34">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${iaOperType eq 'abolish'}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1qrnvpc" sourceRef="userTask_0_34" targetRef="Activity_02gh4gn" />
+    <bpmn:sequenceFlow id="Flow_0uyb1vr" name="否" sourceRef="Gateway_0dz9b4h" targetRef="Gateway_0oz45p4">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!(iaOperType eq 'positive-number' or iaOperType eq 'negative-number' or iaOperType eq 'reverse-invoice' or iaOperType eq 'abolish') or !(busType eq 'other')}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:userTask id="userTask_0_34" name="发票接收" camunda:assignee="${assignee}">
+      <bpmn:extensionElements>
+        <camunda:properties>
+          <camunda:property name="alisa" value="发票接收:InvoiceReceipt" />
+          <camunda:property name="ApprovalButton" value="agree,reject" />
+          <camunda:property name="DisplayButton" value="transmit" />
+          <camunda:property name="serviceType" value="fssc" />
+        </camunda:properties>
+        <camunda:taskListener class="com.geely.fin.listener.assignee.BusinessApproverTaskListener" event="create">
+          <camunda:field name="approveType">
+            <camunda:string>invoiceReceipt</camunda:string>
+          </camunda:field>
+        </camunda:taskListener>
+        <camunda:executionListener class="com.geely.fin.listener.CallBackBusinessExecutionListener" event="start">
+          <camunda:field name="businessType">
+            <camunda:string>invoice_receipt</camunda:string>
+          </camunda:field>
+        </camunda:executionListener>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0akxgbt</bpmn:incoming>
+      <bpmn:outgoing>Flow_1qrnvpc</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_0vn3hmq" name="否" sourceRef="Gateway_0oz45p4" targetRef="Activity_02gh4gn">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!(iaOperType eq 'abolish')}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_13uofg4" name="是" sourceRef="Gateway_1eh4oym" targetRef="userTask_4_1">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${buyerNum eq 'single' and isRelatedParty == 1}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0st47f8" sourceRef="userTask_4_1" targetRef="endEvent_0_1" />
+    <bpmn:sequenceFlow id="Flow_0lqn69q" name="是" sourceRef="Gateway_0v6os5h" targetRef="endEvent_0_1">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${iaOperType eq 'rubrication'}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1dbld1b" name="否" sourceRef="Gateway_0v6os5h" targetRef="Gateway_1eh4oym">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!(iaOperType eq 'rubrication')}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1pdg4m3" name="否" sourceRef="Gateway_1eh4oym" targetRef="endEvent_0_1">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!(buyerNum eq 'single') or (buyerNum eq 'single' and isRelatedParty != 1)}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="InvoicingProcess">
+      <bpmndi:BPMNEdge id="Flow_1pdg4m3_di" bpmnElement="Flow_1pdg4m3">
+        <di:waypoint x="2615" y="175" />
+        <di:waypoint x="2615" y="110" />
+        <di:waypoint x="2970" y="110" />
+        <di:waypoint x="2970" y="182" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2787" y="92" width="11" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1dbld1b_di" bpmnElement="Flow_1dbld1b">
+        <di:waypoint x="2495" y="200" />
+        <di:waypoint x="2590" y="200" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2537" y="182" width="11" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0lqn69q_di" bpmnElement="Flow_0lqn69q">
+        <di:waypoint x="2470" y="225" />
+        <di:waypoint x="2470" y="330" />
+        <di:waypoint x="2970" y="330" />
+        <di:waypoint x="2970" y="218" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2715" y="312" width="11" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0st47f8_di" bpmnElement="Flow_0st47f8">
+        <di:waypoint x="2860" y="200" />
+        <di:waypoint x="2952" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_13uofg4_di" bpmnElement="Flow_13uofg4">
+        <di:waypoint x="2640" y="200" />
+        <di:waypoint x="2760" y="200" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2695" y="182" width="11" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0vn3hmq_di" bpmnElement="Flow_0vn3hmq">
+        <di:waypoint x="1790" y="175" />
+        <di:waypoint x="1790" y="100" />
+        <di:waypoint x="2120" y="100" />
+        <di:waypoint x="2120" y="160" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1950" y="82" width="11" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0uyb1vr_di" bpmnElement="Flow_0uyb1vr">
+        <di:waypoint x="1486" y="225" />
+        <di:waypoint x="1486" y="300" />
+        <di:waypoint x="1790" y="300" />
+        <di:waypoint x="1790" y="225" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1633" y="282" width="11" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1qrnvpc_di" bpmnElement="Flow_1qrnvpc">
+        <di:waypoint x="1990" y="200" />
+        <di:waypoint x="2070" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0akxgbt_di" bpmnElement="Flow_0akxgbt">
+        <di:waypoint x="1815" y="200" />
+        <di:waypoint x="1890" y="200" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1847" y="182" width="11" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0vge2lr_di" bpmnElement="Flow_0vge2lr">
+        <di:waypoint x="1686" y="200" />
+        <di:waypoint x="1765" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0mohlgv_di" bpmnElement="Flow_0mohlgv">
+        <di:waypoint x="966" y="225" />
+        <di:waypoint x="966" y="390" />
+        <di:waypoint x="2120" y="390" />
+        <di:waypoint x="2120" y="240" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1687" y="372" width="12" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1awsit7_di" bpmnElement="Flow_1awsit7">
+        <di:waypoint x="2350" y="200" />
+        <di:waypoint x="2445" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1xip84p_di" bpmnElement="Flow_1xip84p">
+        <di:waypoint x="991" y="200" />
+        <di:waypoint x="1080" y="200" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1017" y="182" width="12" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1hnwh6q_di" bpmnElement="Flow_1hnwh6q">
+        <di:waypoint x="863" y="200" />
+        <di:waypoint x="941" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_12h7sfq_di" bpmnElement="Flow_12h7sfq">
+        <di:waypoint x="2170" y="200" />
+        <di:waypoint x="2250" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_13ppdci_di" bpmnElement="Flow_13ppdci">
+        <di:waypoint x="378" y="200" />
+        <di:waypoint x="463" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1bpoo9s_di" bpmnElement="Flow_1bpoo9s">
+        <di:waypoint x="196" y="200" />
+        <di:waypoint x="278" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0zwxryt_di" bpmnElement="Flow_0zwxryt">
+        <di:waypoint x="1206" y="175" />
+        <di:waypoint x="1206" y="110" />
+        <di:waypoint x="1486" y="110" />
+        <di:waypoint x="1486" y="175" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1341" y="92" width="11" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ofjeey_di" bpmnElement="Flow_0ofjeey">
+        <di:waypoint x="1105" y="175" />
+        <di:waypoint x="1105" y="70" />
+        <di:waypoint x="1486" y="70" />
+        <di:waypoint x="1486" y="175" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1286" y="52" width="11" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_19uaqk4_di" bpmnElement="Flow_19uaqk4">
+        <di:waypoint x="1511" y="200" />
+        <di:waypoint x="1586" y="200" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1544" y="182" width="11" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1r3gyrj_di" bpmnElement="Flow_1r3gyrj">
+        <di:waypoint x="1386" y="200" />
+        <di:waypoint x="1461" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0dsrufr_di" bpmnElement="Flow_0dsrufr">
+        <di:waypoint x="1231" y="200" />
+        <di:waypoint x="1286" y="200" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1254" y="182" width="11" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0h3uzg6_di" bpmnElement="Flow_0h3uzg6">
+        <di:waypoint x="1130" y="200" />
+        <di:waypoint x="1181" y="200" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1146" y="182" width="11" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0mucykr_di" bpmnElement="Flow_0mucykr">
+        <di:waypoint x="708" y="300" />
+        <di:waypoint x="838" y="300" />
+        <di:waypoint x="838" y="225" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1w5pt66_di" bpmnElement="Flow_1w5pt66">
+        <di:waypoint x="708" y="100" />
+        <di:waypoint x="838" y="100" />
+        <di:waypoint x="838" y="175" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0z35153_di" bpmnElement="Flow_0z35153">
+        <di:waypoint x="488" y="225" />
+        <di:waypoint x="488" y="300" />
+        <di:waypoint x="608" y="300" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ugxyvz_di" bpmnElement="Flow_1ugxyvz">
+        <di:waypoint x="488" y="175" />
+        <di:waypoint x="488" y="100" />
+        <di:waypoint x="608" y="100" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="startEvent">
+        <dc:Bounds x="160" y="182" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="168" y="225" width="22" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1uf1dqn_di" bpmnElement="userTask_1_1">
+        <dc:Bounds x="608" y="60" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0kne178_di" bpmnElement="userTask_2_1">
+        <dc:Bounds x="608" y="260" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_035dp9k_di" bpmnElement="Gateway_1ro9spc">
+        <dc:Bounds x="463" y="175" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1t9unc1_di" bpmnElement="Gateway_1cuugwu">
+        <dc:Bounds x="813" y="175" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1ovbt76_di" bpmnElement="Gateway_1ovbt76" isMarkerVisible="true">
+        <dc:Bounds x="1080" y="175" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1062" y="232" width="88" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1gmrysj_di" bpmnElement="Gateway_1gmrysj" isMarkerVisible="true">
+        <dc:Bounds x="1181" y="175" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1168" y="232" width="77" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1qd2spt_di" bpmnElement="userTask_0_2">
+        <dc:Bounds x="1286" y="160" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0dz9b4h_di" bpmnElement="Gateway_0dz9b4h" isMarkerVisible="true">
+        <dc:Bounds x="1461" y="175" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1448" y="232" width="76" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_00mbkb3_di" bpmnElement="userTask_0_3">
+        <dc:Bounds x="1586" y="160" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1o67cms_di" bpmnElement="userTask_0_4">
+        <dc:Bounds x="2250" y="160" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0kcb3nj_di" bpmnElement="userTask_4_1">
+        <dc:Bounds x="2760" y="160" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1eqsudx_di" bpmnElement="userTask_0_1">
+        <dc:Bounds x="278" y="160" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1w0v9ie_di" bpmnElement="endEvent_0_1">
+        <dc:Bounds x="2952" y="182" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2998" y="193" width="22" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1wscokq_di" bpmnElement="Activity_02gh4gn">
+        <dc:Bounds x="2070" y="160" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1eh4oym_di" bpmnElement="Gateway_1eh4oym" isMarkerVisible="true">
+        <dc:Bounds x="2590" y="175" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2576.5" y="235" width="77" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0bhsviy_di" bpmnElement="Gateway_0bhsviy" isMarkerVisible="true">
+        <dc:Bounds x="941" y="175" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="933" y="151" width="67" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0v6os5h_di" bpmnElement="Gateway_0v6os5h" isMarkerVisible="true">
+        <dc:Bounds x="2445" y="175" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2437" y="151" width="66" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0oz45p4_di" bpmnElement="Gateway_0oz45p4" isMarkerVisible="true">
+        <dc:Bounds x="1765" y="175" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1757" y="232" width="66" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0mm75q1_di" bpmnElement="userTask_0_34">
+        <dc:Bounds x="1890" y="160" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

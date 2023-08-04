@@ -1,13 +1,21 @@
 <template>
-  <div class="bpmn-panel" ref="panel">
-    <div class="panel-header">
-      <bpmn-icon :name="bpmnIconName" />
-      <p>{{ bpmnElementName }}</p>
-      <p>{{ customTranslate(currentElementType || "Process") }}</p>
+  <div class="bpmn-panel-wrapper" :class="{ 'bpmn-panel-wrapper-hide': !visible }">
+    <div class="bpmn-panel" ref="panel">
+      <div class="panel-header">
+        <bpmn-icon :name="bpmnIconName" />
+        <p>{{ bpmnElementName }}</p>
+        <p>{{ customTranslate(currentElementType || "Process") }}</p>
+      </div>
+      <el-collapse>
+        <component v-for="cp in this.renderComponents" :key="cp.name" :is="cp" />
+      </el-collapse>
     </div>
-    <el-collapse>
-      <component v-for="cp in this.renderComponents" :key="cp.name" :is="cp" />
-    </el-collapse>
+    <div class="bpmn-panel-tab" @click="trigger">
+      <div class="icon-wrapper fs20">
+        <div class="el-icon-caret-left" v-show="!visible"></div>
+        <div class="el-icon-caret-right" v-show="visible"></div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -48,16 +56,17 @@ export default {
     ElementExecutionListeners,
     ElementAsyncContinuations,
     ElementStartInitiator,
-    ElementExtensionField
+    ElementExtensionField,
   },
   data() {
     return {
+      visible: true,
       bpmnElementName: "Process",
       bpmnIconName: "Process",
       currentElementType: undefined,
       currentElementId: undefined,
       customTranslate,
-      renderComponents: []
+      renderComponents: [],
     };
   },
   created() {
@@ -82,7 +91,9 @@ export default {
     !this.currentElementId && this.setCurrentElement();
   },
   methods: {
-    //
+    trigger() {
+      this.visible = !this.visible;
+    },
     setCurrentElement: debounce(function (element) {
       let activatedElement = element,
         activatedElementTypeName = "";
@@ -98,7 +109,10 @@ export default {
       }
       activatedElementTypeName = getBpmnIconType(activatedElement);
 
-      this.$store.commit("setElement", { element: activatedElement, id: activatedElement.id });
+      this.$store.commit("setElement", {
+        element: activatedElement,
+        id: activatedElement.id,
+      });
       this.currentElementId = activatedElement.id;
       this.currentElementType = activatedElement.type.split(":")[1];
 
@@ -124,7 +138,7 @@ export default {
       isAsynchronous(element) && this.renderComponents.push(ElementAsyncContinuations);
       isStartInitializable(element) && this.renderComponents.push(ElementStartInitiator);
       this.renderComponents.push(ElementExtensionField);
-    }
-  }
+    },
+  },
 };
 </script>

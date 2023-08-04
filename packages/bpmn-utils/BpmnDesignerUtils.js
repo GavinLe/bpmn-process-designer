@@ -54,5 +54,5 @@ export const LISTENER_ALLOWED_TYPES = [
   "bpmn:Gateway",
   "bpmn:SequenceFlow",
   "bpmn:Process",
-  "bpmn:Participant"
+  "bpmn:Participant",
 ];

@@ -8,14 +8,14 @@ Vue.use(Vuex);
 const store = new Vuex.Store({
   state: {
     editor: { ...defaultSettings },
-    bpmn: {}
+    bpmn: {},
   },
   getters: {
     //  editor
     getEditor: (state) => state.editor,
     getProcessDef: (state) => ({
       processName: state.editor.processName,
-      processId: state.editor.processId
+      processId: state.editor.processId,
     }),
     getProcessEngine: (state) => state.editor.processEngine,
     getEditorConfig: (state) => {
@@ -30,7 +30,7 @@ const store = new Vuex.Store({
     // modeler
     getModeler: (state) => state.bpmn._modeler,
     getModeling: (state) => (state.bpmn._modeler ? state.bpmn._modeler.get("modeling") : undefined),
-    getActive: (state) => state.bpmn.activeElement
+    getActive: (state) => state.bpmn.activeElement,
   },
   mutations: {
     // editor
@@ -63,8 +63,8 @@ const store = new Vuex.Store({
      */
     setElement(state, { element, id }) {
       state.bpmn.activeElement = { element: unObserver(element), id };
-    }
-  }
+    },
+  },
 });
 
 export default store;

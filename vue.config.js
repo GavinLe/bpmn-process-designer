@@ -10,8 +10,8 @@ module.exports = defineConfig({
   pages: {
     index: {
       entry: "playground/main.js",
-      template: "public/index.html"
-    }
+      template: "public/index.html",
+    },
   },
   transpileDependencies: false,
   runtimeCompiler: true,
@@ -22,9 +22,9 @@ module.exports = defineConfig({
       alias: {
         "@": resolve("src"),
         "@packages": resolve("packages"),
-        "@utils": resolve("utils")
-      }
-    }
+        "@utils": resolve("utils"),
+      },
+    },
   },
   chainWebpack(config) {
     config.module.rule("svg").exclude.add(resolve("packages/bpmn-icons")).end();
@@ -36,8 +36,11 @@ module.exports = defineConfig({
       .use("svg-sprite-loader")
       .loader("svg-sprite-loader")
       .options({
-        symbolId: "[name]"
+        symbolId: "[name]",
       })
       .end();
-  }
+  },
+  devServer: {
+    port: 4000,
+  },
 });

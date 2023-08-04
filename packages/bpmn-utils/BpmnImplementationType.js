@@ -1,4 +1,3 @@
-import store from "@packages/store";
 import { find } from "min-dash";
 import { getBusinessObject, is, isAny } from "bpmn-js/lib/util/ModelUtil";
 import { getExtensionElementsList } from "../bpmn-utils/BpmnExtensionElements";

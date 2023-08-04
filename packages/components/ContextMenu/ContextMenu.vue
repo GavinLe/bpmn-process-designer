@@ -27,7 +27,7 @@ export default {
       showPopover: false,
       isAppend: false,
       position: { x: 0, y: 0 },
-      currentPosition: {}
+      currentPosition: {},
     };
   },
   created() {
@@ -89,7 +89,7 @@ export default {
         top = clientY - modelHeight;
       }
       return { left: (left += "px"), top: (top += "px") };
-    }
-  }
+    },
+  },
 };
 </script>
